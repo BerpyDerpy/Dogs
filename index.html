@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dogs</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: rgb(26, 24, 24);
+        color: white;
+        margin: 0;
+        padding: 20px;
+      }
+      .container{
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🐕‍🦺</h1>
+    <div class="controls">
+      <button id="refbtn">Refresh</button>
+      <input
+        type="text"
+        placeholder="Search by breed"
+        id="Search"
+      />
+    </div>
+
+    <div class="container"></div>
+    <script>
+      const API = "https://dog.ceo/api/breeds/image/random/15";
+
+      btn = document.getElementById("refbtn");
+      search = document.getElementById("Search");
+      container = document.querySelector(".container");
+
+      let currDogs = [];
+
+      function load() {
+        container.innerHTML = "";
+        Search.innerHTML = "";
+
+        fetch(API)
+          .then((response) => response.json())
+          .then((data) => {
+            currDogs = data.message;
+            display(currDogs);
+          });
+        }
+
+        function display(currDogs) {
+          currDogs.forEach((dog) => {
+            const card = document.createElement("div");
+
+            parts = dog.split("/");
+            breed = parts[parts.length - 2];
+            img = document.createElement("img");
+            img.src = dog;
+            img.alt = breed;
+            img.width = "200";
+            img.height = "200";
+            label = document.createElement("p");
+            label.textContent = breed;
+
+            card.append(img);
+            card.append(label);
+            container.append(card);
+          });
+        }
+        function filterDog(){
+            query = search.value.toLowerCase();
+            let filtered = currDogs.filter(url => {
+                const parts = url.split('/')
+                breed = parts[parts.length-2];
+                return breed.includes(query);
+            })
+
+            container.innerHTML="";
+            display(filtered);
+        }
+      
+      btn.addEventListener("click", load);
+      search.addEventListener("input", filterDog);
+    </script>
+  </body>
+</html>
